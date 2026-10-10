@@ -124,7 +124,9 @@ const createTerpeneList = (strain) => {
 
 export const openStrainDetail = (strain, matched) => {
   detailOpener = document.activeElement;
-  detailContent.replaceChildren(
+  // replaceChildren() would print lists and false as text ("false,[object HTMLElement]"),
+  // so flatten the lists and drop the false parts first, the same way el() does
+  const parts = [
     createStrainImage(strain, `detail-image`),
     el(`header`, { class: `detail-header` },
       el(`h2`, { id: `strain-dialog-title` }, strain.name),
@@ -142,7 +144,8 @@ export const openStrainDetail = (strain, matched) => {
         el(`ul`, { class: `tags` }, strain.aromas.map((aroma) => el(`li`, {}, labelFor(aroma)))))
       : false,
     el(`p`, { class: `detail-note` }, `Effects are predicted from lab results, not proven. Talk to your doctor before use.`),
-  );
+  ];
+  detailContent.replaceChildren(...parts.flat(Infinity).filter((part) => part !== false));
   detailDialog.showModal();
 };
 
