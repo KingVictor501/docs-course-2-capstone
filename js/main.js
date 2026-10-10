@@ -1,10 +1,14 @@
 // ==========================================================
-// STRAIN FINDER: APP START
-// Connects the search form, filters and results.
-// Each part lives in its own file:
-//   data.js       loading + trimming the strains (steps 1 and 2)
-//   symptoms.js   symptom words -> effect labels, matching
-//   cards.js      strain cards + detail view (step 3)
+// FILE: js/main.js
+// WHAT IT DOES: Runs the page. When someone searches, it checks
+// what they typed, finds the matching symptom, applies the THC/CBD
+// and favorites filters, sorts the list, and shows the cards. It also
+// shows the loading box, the "nothing found" help, and error messages.
+// WHY IT'S BUILT THIS WAY: This is the only file that touches the
+// search form. The other files each do one job and are imported here:
+//   data.js       loading + trimming the strains (class steps 1 and 2)
+//   symptoms.js   everyday words -> effect labels, matching
+//   cards.js      strain cards + detail view (class step 3)
 //   favorites.js  saved strains
 //   dom.js        small helpers
 // ==========================================================

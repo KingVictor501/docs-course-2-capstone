@@ -1,7 +1,11 @@
 // ==========================================================
-// SYMPTOMS
-// Turns what someone types ("can't sleep") into the effect labels
-// the data uses ("effect_sleepy"), and finds matching strains.
+// FILE: js/symptoms.js
+// WHAT IT DOES: Understands what people type. It turns everyday words
+// ("can't sleep", "brain fog", "my back hurts", typos like "migrane")
+// into the effect labels in the data, and finds the strains that match.
+// WHY IT'S BUILT THIS WAY: The API mixes helpful effects and side effects
+// in one list, so this file sorts them into groups. That way a strain that
+// CAUSES headaches is never shown as helping with headaches.
 // ==========================================================
 
 // ----------------------------------------------------------

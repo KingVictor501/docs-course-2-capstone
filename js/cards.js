@@ -1,5 +1,10 @@
 // ==========================================================
-// STRAIN CARDS + DETAIL VIEW
+// FILE: js/cards.js
+// WHAT IT DOES: Draws each strain as a card (photo, THC/CBD, what it is
+// predicted to help with, side effects) and opens the detail view with
+// the full description, terpenes and aromas when "Details" is pressed.
+// WHY IT'S BUILT THIS WAY: Everything is built with el() instead of
+// innerHTML, so text that comes from the API can never run as code.
 // ==========================================================
 
 import { el, labelFor } from './dom.js';

@@ -1,11 +1,13 @@
 // ==========================================================
-// STRAIN DATA
-// Loads the strains, trims them to the fields we need, and keeps
-// a copy in the browser for 24 hours.
-// Order we try:
+// FILE: js/data.js
+// WHAT IT DOES: Gets the strain list and cleans it up. It calls the
+// Cannlytics API, keeps only the 8 fields the cards use, fixes missing
+// THC/CBD totals, and saves a copy in the browser for 24 hours.
+// WHY IT'S BUILT THIS WAY: The app should still work when the API is
+// down, so it tries four sources in order:
 //   1. a copy saved in this browser less than 24 hours ago
 //   2. the Cannlytics API
-//   3. an older saved copy (if the API is down)
+//   3. an older saved copy
 //   4. the backup file that ships with the project (data/strains-backup.json)
 // ==========================================================
 

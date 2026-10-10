@@ -1,7 +1,10 @@
 // ==========================================================
-// DOM HELPERS
-// el() builds elements without innerHTML, so text from the API
-// can never be run as HTML.
+// FILE: js/dom.js
+// WHAT IT DOES: Small helpers the other files share: el() builds page
+// elements, and labelFor() turns API labels like "effect_dry_mouth"
+// into readable words like "Dry mouth".
+// WHY IT'S BUILT THIS WAY: el() skips anything set to false, so other
+// files can write `condition ? el(...) : false` instead of if-blocks.
 // ==========================================================
 
 // Builds an element.

@@ -1,6 +1,9 @@
 // ==========================================================
-// FAVORITES
-// Strain names saved in this browser.
+// FILE: js/favorites.js
+// WHAT IT DOES: Remembers which strains someone saved with the heart
+// button, so their list is still there next time they open the page.
+// WHY IT'S BUILT THIS WAY: Storage can be blocked (private browsing),
+// so every save and load is wrapped in try/catch and the page keeps working.
 // ==========================================================
 
 const FAVORITES_KEY = `strain-finder:favorites`;

@@ -1,6 +1,11 @@
 /* ==========================================================
-   Strain Finder styles
-   Calm and botanical: soft greens, warm off-white, clear type.
+   FILE: styles.css
+   WHAT IT DOES: Controls how the page looks: the calm green colors,
+   the card grid (1 column on phones, more on bigger screens), the
+   tag colors, the loading spinner, and dark mode.
+   WHY IT'S BUILT THIS WAY: Each effect group has its own symbol and
+   heading as well as a color (✚ helps, ⚠ side effect), so people who
+   can't tell colors apart still know which is which.
    ========================================================== */
 
 /* ----- Color tokens (light theme) ----- */
