@@ -59,6 +59,31 @@
         <fieldset class="filters">
           <legend>Filter and sort</legend>
 
+          <!-- Each "What is…?" button shows a tip: hover with a mouse, tap on a phone,
+               or Tab to it with a keyboard. Esc closes it. (js/tooltips.js) -->
+          <p class="field field-with-tip">
+            <label for="thc-filter">THC</label>
+            <button type="button" class="tip-button" aria-expanded="false" aria-controls="thc-tip">What is THC?</button>
+            <small id="thc-tip" class="tip" hidden><strong>THC</strong> (tetrahydrocannabinol) is the part of cannabis that causes the "high." The higher the THC %, the <strong>stronger</strong> the strain: it may bring more relief, but also more chance of dizziness, anxiety or a racing heart. People new to cannabis often start low, under 10%.</small>
+            <select id="thc-filter" name="thc">
+              <option value="any">Any THC</option>
+              <option value="low">Low (under 10%)</option>
+              <option value="medium">Medium (10–20%)</option>
+              <option value="high">High (over 20%)</option>
+            </select>
+          </p>
+
+          <p class="field field-with-tip">
+            <label for="cbd-filter">CBD</label>
+            <button type="button" class="tip-button" aria-expanded="false" aria-controls="cbd-tip">What is CBD?</button>
+            <small id="cbd-tip" class="tip" hidden><strong>CBD</strong> (cannabidiol) does <strong>not</strong> cause a high. People use it for calm and comfort, and it may soften some of THC's effects, so a strain with more CBD usually feels <strong>milder</strong>, even at the same THC level. CBD can interact with some medicines, so ask your doctor.</small>
+            <select id="cbd-filter" name="cbd">
+              <option value="any">Any CBD</option>
+              <option value="some">Some CBD (1% or more)</option>
+              <option value="high">High CBD (5% or more)</option>
+            </select>
+          </p>
+
           <p class="field">
             <label for="sort">Sort by</label>
             <select id="sort" name="sort">

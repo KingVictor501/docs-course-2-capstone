@@ -32,6 +32,8 @@
   --button-alt-hover: #2c3832;
   --button-off-bg: #6b756f;    /* unavailable page button: grey */
   --button-shadow: rgba(16, 40, 27, 0.25);
+  --tip-bg: #1d2a22;           /* tooltips: dark box, white text */
+  --tip-text: #ffffff;
   --radius: 14px;
   color-scheme: light;
 }
@@ -58,6 +60,8 @@
     --button-alt-border: #8fd6ab; /* bright edge so it shows against the dark page */
     --button-alt-hover: #405749;
     --button-shadow: rgba(0, 0, 0, 0.5);
+    --tip-bg: #f1f5f2;         /* tooltips: light box, dark text, so it pops off the dark page */
+    --tip-text: #111613;
     color-scheme: dark;
   }
 }
@@ -534,13 +538,15 @@ button {
   box-shadow: none;
 }
 
-/* Sort by and Favorites only stack in one column, lined up on the left,
-   on every screen size. The dropdown stops growing at 20rem on wide screens. */
+/* THC, CBD and Sort by sit side by side on wide screens and stack on phones.
+   align-items: end lines up the bottoms of the dropdowns, and
+   "Favorites only" gets its own row underneath, lined up on the left. */
 .filters {
   min-width: 0; /* fieldsets don't shrink by default; this lets it fit small screens */
   display: grid;
-  grid-template-columns: minmax(0, 20rem);
-  gap: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 0 1rem;
+  align-items: end;
   margin: 0;
   padding: 0.75rem 1rem 0.5rem;
   border: 1px solid var(--border);
@@ -551,6 +557,10 @@ button {
   padding: 0 0.3rem;
   font-weight: 700;
   font-size: 0.9rem;
+}
+
+.filters .field-check {
+  grid-column: 1 / -1;
 }
 
 .field-check {
@@ -911,4 +921,91 @@ select,
 
 .search-actions > button {
   white-space: normal;
+}
+
+/* ==========================================================
+   TOOLTIPS ("What is THC?" / "What is CBD?")
+   ========================================================== */
+
+/* Label and its "What is…?" button on one line, the dropdown underneath */
+.field-with-tip {
+  position: relative; /* the tip is placed against this field */
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 0.6rem;
+}
+
+.field-with-tip select {
+  grid-column: 1 / -1;
+}
+
+/* The button: a small, clearly visible pill with white text and a "?" badge */
+.tip-button {
+  justify-self: start;
+  min-height: 2.25rem;
+  padding: 0.2rem 0.8rem 0.2rem 0.35rem;
+  border: 2px solid var(--button-alt-border);
+  border-radius: 999px;
+  background: var(--button-alt-bg);
+  color: var(--button-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px var(--button-shadow);
+}
+
+.tip-button::before {
+  content: "?" / "";
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--button-text);
+  color: var(--button-alt-bg);
+  font-weight: 800;
+}
+
+.tip-button:hover,
+.tip-button[aria-expanded="true"] {
+  background: var(--button-alt-hover);
+}
+
+/* The tip: floats just under the label row, over the dropdown, with a small arrow */
+.tip {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0; /* as wide as its field, so it never runs off a phone screen */
+  z-index: 5;
+  padding: 0.85rem 1rem;
+  background: var(--tip-bg);
+  color: var(--tip-text);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.tip[hidden] {
+  display: none;
+}
+
+.tip::before {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  left: 1.25rem;
+  border: 0.5rem solid transparent;
+  border-top: 0;
+  border-bottom-color: var(--tip-bg);
+}
+
+/* On big screens there is room for a wider, shorter tip */
+@media (min-width: 60rem) {
+  .tip {
+    right: auto;
+    width: 24rem;
+  }
 }

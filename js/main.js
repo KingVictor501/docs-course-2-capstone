@@ -1,8 +1,8 @@
 // ==========================================================
 // FILE: js/main.js
 // WHAT IT DOES: Runs the page. When someone searches, it checks
-// what they typed, finds the matching symptom, applies the
-// favorites filter, sorts the list, and shows the cards
+// what they typed, finds the matching symptom, applies the THC/CBD
+// and favorites filters, sorts the list, and shows the cards
 // 10 at a time with Previous / Next buttons. It also
 // shows the loading box, the "nothing found" help, and error messages.
 // WHY IT'S BUILT THIS WAY: This is the only file that touches the
@@ -11,6 +11,7 @@
 //   symptoms.js   everyday words -> effect labels, matching
 //   cards.js      strain cards + detail view (class step 3)
 //   favorites.js  saved strains
+//   tooltips.js   the "What is THC?" / "What is CBD?" tips
 //   dom.js        small helpers
 // ==========================================================
 
@@ -19,6 +20,7 @@ import { findSymptom, strainsForSymptom, symptomCounts, availableSymptoms } from
 import { renderStrains, onFavoriteChange, lastDetailOpener } from './cards.js';
 import { getFavorites } from './favorites.js';
 import { el, labelFor } from './dom.js';
+import { setupTooltips } from './tooltips.js';
 
 // ----------------------------------------------------------
 // ELEMENTS
@@ -28,6 +30,8 @@ const searchForm = document.querySelector(`#search-form`);
 const symptomInput = document.querySelector(`#symptom`);
 const symptomError = document.querySelector(`#symptom-error`);
 const symptomOptions = document.querySelector(`#symptom-options`);
+const thcFilter = document.querySelector(`#thc-filter`);
+const cbdFilter = document.querySelector(`#cbd-filter`);
 const sortSelect = document.querySelector(`#sort`);
 const favoritesOnly = document.querySelector(`#favorites-only`);
 const favoritesError = document.querySelector(`#favorites-only-error`);
@@ -97,6 +101,20 @@ const hideLoading = () => {
 // FILTERS AND SORTING
 // ----------------------------------------------------------
 
+// THC and CBD filter rules (the select's value -> a test)
+const THC_RULES = {
+  any: () => true,
+  low: (strain) => strain.totalThc < 10,
+  medium: (strain) => strain.totalThc >= 10 && strain.totalThc <= 20,
+  high: (strain) => strain.totalThc > 20,
+};
+
+const CBD_RULES = {
+  any: () => true,
+  some: (strain) => strain.totalCbd >= 1,
+  high: (strain) => strain.totalCbd >= 5,
+};
+
 // How many of a strain's effects match the symptom (more = better match)
 const matchScore = (strain, symptom) =>
   strain.effects.filter((effect) => symptom.effects.includes(effect)).length;
@@ -113,17 +131,19 @@ const SORTS = {
   [`cbd-desc`]: (first, second) => second.totalCbd - first.totalCbd,
 };
 
-// Runs the favorites filter, then sorts
+// Runs every filter, then sorts
 const filteredStrains = () => {
   const favorites = getFavorites();
   const base = state.symptom ? strainsForSymptom(state.strains, state.symptom) : state.strains;
   return base
+    .filter(THC_RULES[thcFilter.value])
+    .filter(CBD_RULES[cbdFilter.value])
     .filter((strain) => !favoritesOnly.checked || favorites.includes(strain.name))
     .sort(SORTS[sortSelect.value]);
 };
 
-// True when the "Favorites only" filter is switched on
-const filtersActive = () => favoritesOnly.checked;
+// True when a THC, CBD or favorites filter is switched on
+const filtersActive = () => thcFilter.value !== `any` || cbdFilter.value !== `any` || favoritesOnly.checked;
 
 // ----------------------------------------------------------
 // WORDS ABOVE THE RESULTS
@@ -132,11 +152,14 @@ const filtersActive = () => favoritesOnly.checked;
 const plural = (count, word) => `${count} ${word}${count === 1 ? `` : `s`}`;
 
 // "3 strains predicted to help with migraines"
-// The count only appears once something narrows the list (a symptom or "Favorites only")
+// The count only appears once something narrows the list (a symptom or a filter)
 const resultsTitle = (count) => {
   const symptom = state.symptom;
   if (!symptom) {
-    return filtersActive() ? plural(count, `favorite strain`) : `All strains`;
+    if (favoritesOnly.checked) {
+      return plural(count, `favorite strain`);
+    }
+    return filtersActive() ? `${plural(count, `strain`)} match your filters` : `All strains`;
   }
   return symptom.via
     ? `${plural(count, `strain`)} predicted to make you feel ${symptom.via}, which may help with ${symptom.name.toLowerCase()}`
@@ -190,7 +213,7 @@ const renderEmptyState = () => {
   const reasons = [];
 
   if (filtersActive()) {
-    reasons.push(`"Favorites only" is hiding every match. Turn it off to see them.`);
+    reasons.push(`Your filters are hiding every match. Try a different THC or CBD level, or turn off "Favorites only".`);
   }
 
   emptyMessage.textContent = reasons.join(` `) || `Nothing matches.`;
@@ -201,7 +224,7 @@ const renderEmptyState = () => {
     .slice(0, 5)
     .map(({ symptom: other, count }) => createSymptomButton(other, count));
   const resetButton = filtersActive()
-    ? el(`li`, {}, el(`button`, { type: `button`, class: `chip chip-reset`, onclick: resetFilters }, `Turn off Favorites only`))
+    ? el(`li`, {}, el(`button`, { type: `button`, class: `chip chip-reset`, onclick: resetFilters }, `Reset filters`))
     : false;
 
   emptySuggestions.replaceChildren(...suggestions, ...[resetButton].filter((item) => item !== false));
@@ -354,8 +377,10 @@ const handleFilterChange = () => {
   showResults();
 };
 
-// Switches "Favorites only" off
+// Puts the THC, CBD and favorites filters back to "any"
 const resetFilters = () => {
+  thcFilter.value = `any`;
+  cbdFilter.value = `any`;
   favoritesOnly.checked = false;
   handleFilterChange();
   resultsHeading.focus();
@@ -445,7 +470,7 @@ const loadStrains = async () => {
 
 searchForm.addEventListener(`submit`, handleSearch);
 symptomInput.addEventListener(`input`, handleSymptomInput);
-[sortSelect, favoritesOnly].forEach((control) => control.addEventListener(`change`, handleFilterChange));
+[thcFilter, cbdFilter, sortSelect, favoritesOnly].forEach((control) => control.addEventListener(`change`, handleFilterChange));
 clearButton.addEventListener(`click`, handleClear);
 previousButton.addEventListener(`click`, () => changePage(-1));
 nextButton.addEventListener(`click`, () => changePage(1));
@@ -454,4 +479,5 @@ refreshButton.addEventListener(`click`, () => {
   loadStrains();
 });
 
+setupTooltips();
 loadStrains();
