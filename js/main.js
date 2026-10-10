@@ -195,7 +195,7 @@ const createSymptomButton = (symptom, count) => el(`li`, {},
     type: `button`,
     class: `chip`,
     onclick: () => searchFor(symptom.name),
-  }, symptom.name, el(`small`, {}, ` ${count}`)),
+  }, symptom.name, el(`small`, {}, ` ${count}`, el(`b`, { class: `visually-hidden` }, ` strains`))),
 );
 
 // Symptoms that have at least one strain, biggest first

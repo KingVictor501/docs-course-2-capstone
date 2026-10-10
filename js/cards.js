@@ -29,8 +29,8 @@ export const onFavoriteChange = (callback) => { favoriteChanged = callback; };
 // A labeled row of tags. Tags that match the search get a highlight
 // and the words "matches your search" for screen readers.
 // Returns false (nothing) when the list is empty.
-const createTagGroup = (title, effects, className, matched) => (effects.length === 0 ? false : el(`section`, { class: `tag-group ${className}` },
-  el(`h3`, {}, title),
+const createTagGroup = (title, effects, className, matched, headingTag) => (effects.length === 0 ? false : el(`section`, { class: `tag-group ${className}` },
+  el(headingTag, {}, title),
   el(`ul`, { class: `tags` }, effects.map((effect) => {
     const isMatch = matched.includes(effect);
     return el(`li`, { class: isMatch ? `is-match` : false },
@@ -40,12 +40,13 @@ const createTagGroup = (title, effects, className, matched) => (effects.length =
 ));
 
 // The three effect groups for a strain
-const createEffectGroups = (strain, matched) => {
+// headingTag: `h4` on cards (under the strain's h3), `h3` in the detail view (under its h2)
+const createEffectGroups = (strain, matched, headingTag) => {
   const { helpsWith, sideEffects, feelings } = groupEffects(strain.effects);
   return [
-    createTagGroup(`Predicted to help with`, helpsWith, `tags-helps`, matched),
-    createTagGroup(`Predicted effects`, feelings, `tags-feelings`, matched),
-    createTagGroup(`Possible side effects`, sideEffects, `tags-side`, matched),
+    createTagGroup(`Predicted to help with`, helpsWith, `tags-helps`, matched, headingTag),
+    createTagGroup(`Predicted effects`, feelings, `tags-feelings`, matched, headingTag),
+    createTagGroup(`Possible side effects`, sideEffects, `tags-side`, matched, headingTag),
     strain.effects.length === 0 ? el(`p`, { class: `no-effects` }, `No predicted effects listed for this strain.`) : false,
   ];
 };
@@ -67,6 +68,16 @@ const createPotency = (strain) => el(`dl`, { class: `potency` },
   el(`dt`, {}, `CBD`), el(`dd`, {}, `${strain.totalCbd}%`),
 );
 
+// What the heart button says. The heart symbol is hidden from screen readers
+// (it would be read as "white heart suit"); the strain name is hidden on screen
+// but read aloud, so the button is announced as "Save 24K Gold" / "Saved 24K Gold".
+// Spoken and visible words match, so voice control ("click Save") works too.
+const favoriteButtonContent = (strain, saved) => [
+  el(`b`, { class: `heart`, [`aria-hidden`]: `true` }, saved ? `♥ ` : `♡ `),
+  saved ? `Saved` : `Save`,
+  el(`small`, { class: `visually-hidden` }, ` ${strain.name}`),
+];
+
 // Heart button. aria-pressed tells screen readers whether it is saved.
 const createFavoriteButton = (strain) => {
   const saved = isFavorite(strain.name);
@@ -74,19 +85,19 @@ const createFavoriteButton = (strain) => {
     type: `button`,
     class: `favorite-button`,
     [`aria-pressed`]: `${saved}`,
-    [`aria-label`]: `Save ${strain.name} to favorites`,
+    [`data-strain`]: strain.name,
     onclick: (event) => {
       const nowSaved = toggleFavorite(strain.name);
       // Update every heart for this strain (card and detail view)
       document.querySelectorAll(`.favorite-button`).forEach((button) => {
-        if (button.getAttribute(`aria-label`) === `Save ${strain.name} to favorites`) {
+        if (button.dataset.strain === strain.name) {
           button.setAttribute(`aria-pressed`, `${nowSaved}`);
-          button.textContent = nowSaved ? `♥ Saved` : `♡ Save`;
+          button.replaceChildren(...favoriteButtonContent(strain, nowSaved));
         }
       });
       favoriteChanged(strain, nowSaved, event.currentTarget);
     },
-  }, saved ? `♥ Saved` : `♡ Save`);
+  }, favoriteButtonContent(strain, saved));
 };
 
 // ----------------------------------------------------------
@@ -121,7 +132,7 @@ export const openStrainDetail = (strain, matched) => {
     ),
     el(`p`, { class: `detail-actions` }, createFavoriteButton(strain)),
     strain.description ? el(`p`, { class: `detail-description` }, strain.description) : false,
-    createEffectGroups(strain, matched),
+    createEffectGroups(strain, matched, `h3`),
     el(`section`, { class: `tag-group` },
       el(`h3`, {}, `Terpenes`),
       createTerpeneList(strain)),
@@ -147,10 +158,10 @@ const createStrainCard = (strain, matched) => el(`li`, {},
   el(`article`, { class: `strain-card`, [`aria-labelledby`]: idFor(strain.name) },
     createStrainImage(strain, `card-image`),
     el(`header`, { class: `card-header` },
-      el(`h2`, { id: idFor(strain.name) }, strain.name),
+      el(`h3`, { id: idFor(strain.name) }, strain.name),
       createPotency(strain),
     ),
-    createEffectGroups(strain, matched),
+    createEffectGroups(strain, matched, `h4`),
     el(`footer`, { class: `card-actions` },
       el(`button`, {
         type: `button`,
