@@ -565,6 +565,10 @@ button {
   accent-color: var(--accent);
 }
 
+.field-check[hidden] {
+  display: none;
+}
+
 .field-check .error {
   grid-column: 1 / -1;
 }

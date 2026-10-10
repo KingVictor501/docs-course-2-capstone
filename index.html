@@ -89,8 +89,10 @@
             </select>
           </p>
 
-          <p class="field field-check">
-            <input id="favorites-only" name="favoritesOnly" type="checkbox" aria-describedby="favorites-only-error">
+          <!-- Hidden for now; remove "hidden" to show it. autocomplete="off" stops the
+               browser from re-checking it on reload while nobody can see it. -->
+          <p class="field field-check" hidden>
+            <input id="favorites-only" name="favoritesOnly" type="checkbox" autocomplete="off" aria-describedby="favorites-only-error">
             <label for="favorites-only">Favorites only</label>
             <small class="error" id="favorites-only-error"></small>
           </p>
