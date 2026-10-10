@@ -60,25 +60,6 @@
           <legend>Filter and sort</legend>
 
           <p class="field">
-            <label for="thc-filter">THC</label>
-            <select id="thc-filter" name="thc">
-              <option value="any">Any THC</option>
-              <option value="low">Low (under 10%)</option>
-              <option value="medium">Medium (10–20%)</option>
-              <option value="high">High (over 20%)</option>
-            </select>
-          </p>
-
-          <p class="field">
-            <label for="cbd-filter">CBD</label>
-            <select id="cbd-filter" name="cbd">
-              <option value="any">Any CBD</option>
-              <option value="some">Some CBD (1% or more)</option>
-              <option value="high">High CBD (5% or more)</option>
-            </select>
-          </p>
-
-          <p class="field">
             <label for="sort">Sort by</label>
             <select id="sort" name="sort">
               <option value="best">Best match</option>
@@ -89,10 +70,8 @@
             </select>
           </p>
 
-          <!-- Hidden for now; remove "hidden" to show it. autocomplete="off" stops the
-               browser from re-checking it on reload while nobody can see it. -->
-          <p class="field field-check" hidden>
-            <input id="favorites-only" name="favoritesOnly" type="checkbox" autocomplete="off" aria-describedby="favorites-only-error">
+          <p class="field field-check">
+            <input id="favorites-only" name="favoritesOnly" type="checkbox" aria-describedby="favorites-only-error">
             <label for="favorites-only">Favorites only</label>
             <small class="error" id="favorites-only-error"></small>
           </p>

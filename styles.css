@@ -24,12 +24,14 @@
   --side-bg: #fbeee6;
   --side-text: #8a3b12;
   --focus: #d08a00;
-  --button-bg: #2f6f4f;        /* solid buttons: deep green with white text */
-  --button-text: #ffffff;
+  --button-text: #ffffff;      /* every button has white text */
+  --button-bg: #2f6f4f;        /* main buttons: deep green */
   --button-hover: #22553b;
+  --button-alt-bg: #3f4d45;    /* second-choice buttons and chips: dark grey-green */
+  --button-alt-border: #3f4d45;
+  --button-alt-hover: #2c3832;
+  --button-off-bg: #6b756f;    /* unavailable page button: grey */
   --button-shadow: rgba(16, 40, 27, 0.25);
-  --details-bg: #2f6f4f;       /* card Details button: always white text */
-  --details-hover: #22553b;
   --radius: 14px;
   color-scheme: light;
 }
@@ -50,12 +52,12 @@
     --feel-text: #c4cdea;
     --side-bg: #3d2619;
     --side-text: #f3c0a0;
-    --button-bg: #8fd6ab;      /* solid buttons: bright green with near-black text */
-    --button-text: #0b1a11;
-    --button-hover: #b2e6c6;
+    --button-bg: #2e7d55;      /* deep enough for white text (5:1), still stands out on dark */
+    --button-hover: #276b48;
+    --button-alt-bg: #34463b;
+    --button-alt-border: #8fd6ab; /* bright edge so it shows against the dark page */
+    --button-alt-hover: #405749;
     --button-shadow: rgba(0, 0, 0, 0.5);
-    --details-bg: #2e7d55;     /* deep enough for white text (5:1), still stands out on the dark card */
-    --details-hover: #276b48;
     color-scheme: dark;
   }
 }
@@ -482,9 +484,9 @@ button {
   cursor: pointer;
 }
 
-/* Two button styles, used everywhere:
-   - solid green: the main action (Find strains, Details, Next, Close)
-   - thick green outline: the second choice (Clear, Save, Refresh data)
+/* Two button styles, both with white text:
+   - green: the main action (Find strains, Details, Next, Close)
+   - dark grey-green: the second choice (Clear, Save, Refresh data, symptom chips)
    Both have a 2px border, bold text and a small shadow so they look pressable. */
 .button-primary,
 .button-secondary,
@@ -507,8 +509,9 @@ button {
 
 .button-secondary,
 .favorite-button {
-  background: var(--surface);
-  color: var(--accent);
+  background: var(--button-alt-bg);
+  border-color: var(--button-alt-border);
+  color: var(--button-text);
 }
 
 .button-primary:hover,
@@ -519,7 +522,7 @@ button {
 
 .button-secondary:hover,
 .favorite-button:hover {
-  background: var(--helps-bg);
+  background: var(--button-alt-hover);
 }
 
 /* Pressed: the button sinks a little */
@@ -565,10 +568,6 @@ button {
   accent-color: var(--accent);
 }
 
-.field-check[hidden] {
-  display: none;
-}
-
 .field-check .error {
   grid-column: 1 / -1;
 }
@@ -598,29 +597,33 @@ button {
 .chip {
   min-height: 2.75rem;
   padding: 0.35rem 1rem;
-  border: 2px solid var(--button-bg);
+  border: 2px solid var(--button-alt-border);
   border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
+  background: var(--button-alt-bg);
+  color: var(--button-text);
   font-size: 1rem;
   font-weight: 700;
   box-shadow: 0 1px 3px var(--button-shadow);
 }
 
 .chip:hover {
-  background: var(--helps-bg);
+  background: var(--button-alt-hover);
 }
 
 .chip small {
   margin-left: 0.3rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  color: var(--button-text);
+  font-weight: 500;
 }
 
+/* "Turn off Favorites only" stands out as the main way forward */
 .chip-reset {
-  background: transparent;
-  color: var(--accent);
-  border-color: var(--accent);
+  background: var(--button-bg);
+  border-color: var(--button-bg);
+}
+
+.chip-reset:hover {
+  background: var(--button-hover);
 }
 
 /* ==========================================================
@@ -684,20 +687,12 @@ button {
 .card-actions .details-button {
   flex: 1;
   padding: 0.55rem 0.75rem;
-  background: var(--details-bg);
-  border-color: var(--details-bg);
-  color: #ffffff;
-}
-
-.card-actions .details-button:hover {
-  background: var(--details-hover);
-  border-color: var(--details-hover);
 }
 
 /* Saved favorites: filled heart plus a green background */
 .favorite-button[aria-pressed="true"] {
-  background: var(--helps-bg);
-  color: var(--helps-text);
+  background: var(--button-bg);
+  border-color: var(--button-bg);
 }
 
 /* The last tag group no longer needs extra space; buttons sit below it */
@@ -851,9 +846,9 @@ button {
 /* Unavailable (first or last page): grey and dashed, no shadow */
 .page-button:disabled,
 .page-button:disabled:hover {
-  background: var(--surface-alt);
+  background: var(--button-off-bg);
   border: 2px dashed var(--text-muted);
-  color: var(--text-muted);
+  color: var(--button-text);
   box-shadow: none;
   transform: none;
   cursor: not-allowed;
