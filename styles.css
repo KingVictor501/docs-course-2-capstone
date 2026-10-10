@@ -1,0 +1,728 @@
+/* ==========================================================
+   Strain Finder styles
+   Calm and botanical: soft greens, warm off-white, clear type.
+   ========================================================== */
+
+/* ----- Color tokens (light theme) ----- */
+:root {
+  --bg: #f6f5f0;
+  --surface: #ffffff;
+  --surface-alt: #eef3ee;
+  --text: #1d2a22;
+  --text-muted: #556259;
+  --border: #d6ddd5;
+  --accent: #2f6f4f;
+  --helps-bg: #e3f1e7;
+  --helps-text: #1f5a3a;
+  --feel-bg: #eef0f6;
+  --feel-text: #33405e;
+  --side-bg: #fbeee6;
+  --side-text: #8a3b12;
+  --focus: #d08a00;
+  --radius: 14px;
+  color-scheme: light;
+}
+
+/* ----- Dark theme (follows the device setting) ----- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111613;
+    --surface: #18201b;
+    --surface-alt: #1f2a23;
+    --text: #e6ece7;
+    --text-muted: #a6b3aa;
+    --border: #2f3b33;
+    --accent: #7cc49b;
+    --helps-bg: #1e3b2a;
+    --helps-text: #a8e2be;
+    --feel-bg: #252c3d;
+    --feel-text: #c4cdea;
+    --side-bg: #3d2619;
+    --side-text: #f3c0a0;
+    color-scheme: dark;
+  }
+}
+
+/* ----- Base ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+}
+
+/* Visible focus ring for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: var(--surface);
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ----- Header ----- */
+.site-header,
+main,
+.site-footer {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.site-header {
+  padding-top: 2.5rem;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin: 0.25rem 0 1.5rem;
+  color: var(--text-muted);
+  max-width: 40rem;
+}
+
+.status {
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid var(--accent);
+  background: var(--surface-alt);
+  border-radius: 4px;
+}
+
+/* ----- Loading message with a spinning ring ----- */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 12rem;
+  margin: 1rem 0;
+  color: var(--text-muted);
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* [hidden] must win over display: flex above */
+.loading[hidden] {
+  display: none;
+}
+
+.loading::before {
+  content: "";
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* People who turn on "reduce motion" see a still ring instead of a spinning one */
+@media (prefers-reduced-motion: reduce) {
+  .loading::before {
+    animation: none;
+  }
+}
+
+/* ----- Card grid: 1 column on phones, more as the screen widens ----- */
+.strain-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 1rem 0 2rem;
+  padding: 0;
+}
+
+.strain-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.strain-card img {
+  width: 100%;
+  height: 11rem;
+  object-fit: cover;
+  background: var(--surface-alt);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.25rem;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+/* THC / CBD shown side by side */
+.potency {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 0.4rem;
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.potency dt {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.potency dd {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----- Effect tags ----- */
+.tag-group {
+  padding: 0.5rem 1rem 0;
+}
+
+.tag-group:last-of-type {
+  padding-bottom: 1rem;
+}
+
+.tag-group h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tags li {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Each group has its own color AND its own heading, so color is never the only clue */
+.tags-helps li {
+  background: var(--helps-bg);
+  color: var(--helps-text);
+}
+
+.tags-helps li::before {
+  content: "✚ ";
+}
+
+.tags-feelings li {
+  background: var(--feel-bg);
+  color: var(--feel-text);
+}
+
+.tags-side li {
+  background: var(--side-bg);
+  color: var(--side-text);
+}
+
+.tags-side li::before {
+  content: "⚠ ";
+}
+
+.no-effects {
+  margin: 0.5rem 1rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ----- Footer: Florida disclaimer ----- */
+.site-footer {
+  padding-bottom: 3rem;
+}
+
+.disclaimer {
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--side-text);
+  border-radius: var(--radius);
+}
+
+.disclaimer h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.disclaimer ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}
+
+.disclaimer li + li {
+  margin-top: 0.4rem;
+}
+
+.source-note {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ==========================================================
+   SEARCH PANEL
+   ========================================================== */
+.search-panel {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0 0 0.75rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+.field-symptom label {
+  font-size: 1.1rem;
+}
+
+input[type="search"],
+select {
+  font: inherit;
+  font-size: 1rem; /* 16px stops iPhones zooming in */
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  min-height: 2.75rem; /* 44px touch target */
+  width: 100%;
+}
+
+input[type="search"] {
+  font-size: 1.1rem;
+  min-height: 3.25rem;
+}
+
+input:focus-visible,
+select:focus-visible {
+  border-color: var(--accent);
+}
+
+/* Invalid fields get a colored border AND a written message */
+[aria-invalid="true"] {
+  border-color: var(--side-text) !important;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.error {
+  color: var(--side-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.error:empty {
+  display: none;
+}
+
+.error::before {
+  content: "⚠ ";
+}
+
+.search-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.button-primary,
+.button-secondary {
+  min-height: 2.75rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 10px;
+  border: 2px solid var(--accent);
+  font-weight: 600;
+}
+
+.button-primary {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+.button-primary:hover {
+  filter: brightness(1.1);
+}
+
+.button-secondary:hover {
+  background: var(--surface-alt);
+}
+
+/* Filters sit side by side on wide screens */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 0 1rem;
+  align-items: end;
+  margin: 0;
+  padding: 0.75rem 1rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.filters legend {
+  padding: 0 0.3rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.field-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  min-height: 2.75rem;
+}
+
+.field-check input {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.field-check .error {
+  grid-column: 1 / -1;
+}
+
+/* ----- Quick-pick symptom buttons ----- */
+.quick-picks {
+  margin-top: 1rem;
+}
+
+.quick-picks h2 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.quick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chip {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.chip small {
+  margin-left: 0.25rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.chip-reset {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ==========================================================
+   RESULTS
+   ========================================================== */
+.results-heading {
+  margin: 1.5rem 0 0.25rem;
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+.results-heading:focus {
+  outline: none;
+}
+
+.results-heading:focus-visible {
+  outline: 3px solid var(--focus);
+}
+
+.results-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.results-note:empty {
+  display: none;
+}
+
+.empty-state {
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.25rem;
+}
+
+/* Effect tags that match the search stand out with an outline and bold text */
+.tags li.is-match {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+  font-weight: 800;
+}
+
+/* ----- Card buttons ----- */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto; /* pushes buttons to the bottom of every card */
+  padding: 0.75rem 1rem 1rem;
+}
+
+.details-button,
+.favorite-button {
+  flex: 1;
+  min-height: 2.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.details-button:hover,
+.favorite-button:hover {
+  border-color: var(--accent);
+}
+
+/* Saved favorites: filled heart text plus a tinted background */
+.favorite-button[aria-pressed="true"] {
+  background: var(--helps-bg);
+  color: var(--helps-text);
+  border-color: var(--helps-text);
+}
+
+/* The last tag group no longer needs extra space; buttons sit below it */
+.tag-group:last-of-type {
+  padding-bottom: 0;
+}
+
+/* ==========================================================
+   DETAIL VIEW
+   ========================================================== */
+.strain-dialog {
+  width: min(42rem, calc(100% - 2rem));
+  max-height: 90vh;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.strain-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.detail-image {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0;
+}
+
+.detail-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.detail-actions {
+  display: flex;
+  margin: 0.5rem 1.25rem 0;
+}
+
+.detail-actions .favorite-button {
+  flex: 0 1 auto;
+  padding: 0 1.25rem;
+}
+
+.detail-description {
+  margin: 0.75rem 1.25rem 0;
+}
+
+.strain-dialog .tag-group {
+  padding: 0.75rem 1.25rem 0;
+}
+
+.terpene-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1rem;
+  align-items: center;
+  margin: 0;
+}
+
+.terpene-list dt {
+  font-weight: 600;
+}
+
+.terpene-list dd {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.terpene-list meter {
+  flex: 1;
+  height: 0.7rem;
+}
+
+.terpene-list data {
+  min-width: 3.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+}
+
+.tags-aromas li {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.detail-note {
+  margin: 1rem 1.25rem 0;
+  padding: 0.6rem 0.8rem;
+  background: var(--side-bg);
+  color: var(--side-text);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.dialog-close {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* Footer refresh button that looks like a link */
+.link-button {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+#data-note:empty {
+  display: none;
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find cannabis strains predicted to help with a symptom.">
+  <title>Strain Finder</title>
+  <!-- Tab icon (a leaf), drawn inline so there is no missing-file error in the console -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2726%27%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <h1>Strain Finder</h1>
+    <p class="lede">Cannabis strains <strong>predicted to help with</strong> common symptoms, based on lab-tested chemistry. Not medical advice; see the Florida notice below.</p>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== SEARCH + FILTERS ===== -->
+    <section class="search-panel" aria-labelledby="search-heading">
+      <h2 id="search-heading" class="visually-hidden">Search</h2>
+
+      <form id="search-form" role="search" novalidate>
+        <p class="field field-symptom">
+          <label for="symptom">What symptom do you have?</label>
+          <!-- The list attribute connects the box to the suggestion list below it -->
+          <input id="symptom" name="symptom" type="search" list="symptom-options"
+            minlength="2" maxlength="40" pattern="[A-Za-z'’ \-]+" autocomplete="off" spellcheck="false"
+            placeholder="e.g. migraine, insomnia, stress"
+            aria-describedby="symptom-hint symptom-error">
+          <datalist id="symptom-options"></datalist>
+          <small class="hint" id="symptom-hint">Leave empty to browse every strain.</small>
+          <small class="error" id="symptom-error"></small>
+        </p>
+        <p class="search-actions">
+          <button type="submit" class="button-primary">Find strains</button>
+          <button type="button" id="clear-button" class="button-secondary">Clear</button>
+        </p>
+
+        <fieldset class="filters">
+          <legend>Filter and sort</legend>
+
+          <p class="field">
+            <label for="thc-filter">THC</label>
+            <select id="thc-filter" name="thc">
+              <option value="any">Any THC</option>
+              <option value="low">Low (under 10%)</option>
+              <option value="medium">Medium (10–20%)</option>
+              <option value="high">High (over 20%)</option>
+            </select>
+          </p>
+
+          <p class="field">
+            <label for="cbd-filter">CBD</label>
+            <select id="cbd-filter" name="cbd">
+              <option value="any">Any CBD</option>
+              <option value="some">Some CBD (1% or more)</option>
+              <option value="high">High CBD (5% or more)</option>
+            </select>
+          </p>
+
+          <p class="field">
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort">
+              <option value="best">Best match</option>
+              <option value="name">Name (A–Z)</option>
+              <option value="thc-desc">THC (high to low)</option>
+              <option value="thc-asc">THC (low to high)</option>
+              <option value="cbd-desc">CBD (high to low)</option>
+            </select>
+          </p>
+
+          <p class="field field-check">
+            <input id="favorites-only" name="favoritesOnly" type="checkbox" aria-describedby="favorites-only-error">
+            <label for="favorites-only">Favorites only</label>
+            <small class="error" id="favorites-only-error"></small>
+          </p>
+        </fieldset>
+      </form>
+
+      <!-- Quick picks: symptoms that have results, with counts -->
+      <nav class="quick-picks" aria-labelledby="quick-heading">
+        <h2 id="quick-heading">Popular symptoms</h2>
+        <ul id="quick-symptoms" class="quick-list"></ul>
+      </nav>
+    </section>
+
+    <!-- Screen readers announce changes to this message -->
+    <p id="status" class="status" role="status">Loading strain data…</p>
+
+    <!-- ===== RESULTS ===== -->
+    <!-- aria-busy tells screen readers the list is still loading -->
+    <section id="results" aria-labelledby="results-heading" aria-busy="true">
+      <h2 id="results-heading" class="results-heading" tabindex="-1">Strains</h2>
+      <p id="results-note" class="results-note"></p>
+
+      <!-- Shown while the API call is in progress, hidden when the cards arrive -->
+      <p id="loading" class="loading">Loading strains…</p>
+
+      <!-- Shown when nothing matches -->
+      <section id="empty-state" class="empty-state" aria-labelledby="empty-heading" hidden>
+        <h3 id="empty-heading">No strains found</h3>
+        <p id="empty-message"></p>
+        <ul id="empty-suggestions" class="quick-list"></ul>
+      </section>
+
+      <ul id="strain-list" class="strain-list"></ul>
+    </section>
+  </main>
+
+  <!-- ===== STRAIN DETAIL VIEW ===== -->
+  <dialog id="strain-dialog" class="strain-dialog" aria-labelledby="strain-dialog-title">
+    <article id="strain-dialog-content"></article>
+    <form method="dialog" class="dialog-close">
+      <button type="submit" class="button-secondary">Close</button>
+    </form>
+  </dialog>
+
+  <!-- ===== FLORIDA HEALTH DISCLAIMER ===== -->
+  <footer class="site-footer">
+    <section class="disclaimer" aria-labelledby="disclaimer-heading">
+      <h2 id="disclaimer-heading">Health and legal notice (Florida)</h2>
+      <ul>
+        <li><strong>Not medical advice.</strong> Effects are <em>predicted</em> by a statistical model from each strain's lab results and user reviews. They are not clinical evidence, and they are not a diagnosis or treatment plan.</li>
+        <li><strong>Talk to your doctor first,</strong> especially if you are pregnant, breastfeeding, have a heart or mental health condition, or take any medication. Cannabis can interact with medicines such as blood thinners, sedatives and antidepressants.</li>
+        <li><strong>Florida allows medical use only.</strong> Recreational use is illegal. You need a recommendation from a qualified Florida physician and an active Medical Marijuana Use Registry ID card. Patients under 18 also need a second physician's approval and a registered caregiver.</li>
+        <li>Buy only from a licensed Florida Medical Marijuana Treatment Center. Do not drive or operate machinery after use.</li>
+        <li>Learn more at the <a href="https://knowthefactsmmj.com/">Florida Office of Medical Marijuana Use</a>. In an emergency, call 911. For poisoning questions, call Poison Control at <a href="tel:18002221222">1-800-222-1222</a>.</li>
+      </ul>
+    </section>
+    <p class="source-note">
+      Strain data: <a href="https://cannlytics.com/">Cannlytics</a> (last updated 2023).
+      <output id="data-note"></output>
+      <button type="button" id="refresh-data" class="link-button">Refresh data</button>
+    </p>
+  </footer>
+</body>
+</html>
