@@ -24,6 +24,10 @@
   --side-bg: #fbeee6;
   --side-text: #8a3b12;
   --focus: #d08a00;
+  --button-bg: #2f6f4f;        /* solid buttons: deep green with white text */
+  --button-text: #ffffff;
+  --button-hover: #22553b;
+  --button-shadow: rgba(16, 40, 27, 0.25);
   --radius: 14px;
   color-scheme: light;
 }
@@ -44,6 +48,10 @@
     --feel-text: #c4cdea;
     --side-bg: #3d2619;
     --side-text: #f3c0a0;
+    --button-bg: #8fd6ab;      /* solid buttons: bright green with near-black text */
+    --button-text: #0b1a11;
+    --button-hover: #b2e6c6;
+    --button-shadow: rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
 }
@@ -419,31 +427,53 @@ button {
   cursor: pointer;
 }
 
+/* Two button styles, used everywhere:
+   - solid green: the main action (Find strains, Details, Next, Close)
+   - thick green outline: the second choice (Clear, Save, Refresh data)
+   Both have a 2px border, bold text and a small shadow so they look pressable. */
 .button-primary,
-.button-secondary {
-  min-height: 2.75rem;
+.button-secondary,
+.details-button,
+.favorite-button {
+  min-height: 3rem;
   padding: 0.55rem 1.25rem;
   border-radius: 10px;
-  border: 2px solid var(--accent);
-  font-weight: 600;
+  border: 2px solid var(--button-bg);
+  font-size: 1.05rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px var(--button-shadow);
 }
 
-.button-primary {
-  background: var(--accent);
-  color: var(--surface);
+.button-primary,
+.details-button {
+  background: var(--button-bg);
+  color: var(--button-text);
 }
 
-.button-secondary {
-  background: transparent;
+.button-secondary,
+.favorite-button {
+  background: var(--surface);
   color: var(--accent);
 }
 
-.button-primary:hover {
-  filter: brightness(1.1);
+.button-primary:hover,
+.details-button:hover {
+  background: var(--button-hover);
+  border-color: var(--button-hover);
 }
 
-.button-secondary:hover {
-  background: var(--surface-alt);
+.button-secondary:hover,
+.favorite-button:hover {
+  background: var(--helps-bg);
+}
+
+/* Pressed: the button sinks a little */
+.button-primary:active,
+.button-secondary:active,
+.details-button:active,
+.favorite-button:active {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 /* Filters sit side by side on wide screens */
@@ -507,23 +537,25 @@ button {
 }
 
 .chip {
-  min-height: 2.5rem;
-  padding: 0.35rem 0.9rem;
-  border: 1px solid var(--border);
+  min-height: 2.75rem;
+  padding: 0.35rem 1rem;
+  border: 2px solid var(--button-bg);
   border-radius: 999px;
-  background: var(--surface-alt);
+  background: var(--surface);
   color: var(--text);
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px var(--button-shadow);
 }
 
 .chip:hover {
-  border-color: var(--accent);
+  background: var(--helps-bg);
 }
 
 .chip small {
-  margin-left: 0.25rem;
+  margin-left: 0.3rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .chip-reset {
@@ -590,27 +622,16 @@ button {
   padding: 0.75rem 1rem 1rem;
 }
 
-.details-button,
-.favorite-button {
+.card-actions .details-button,
+.card-actions .favorite-button {
   flex: 1;
-  min-height: 2.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  font-weight: 600;
+  padding: 0.55rem 0.75rem;
 }
 
-.details-button:hover,
-.favorite-button:hover {
-  border-color: var(--accent);
-}
-
-/* Saved favorites: filled heart text plus a tinted background */
+/* Saved favorites: filled heart plus a green background */
 .favorite-button[aria-pressed="true"] {
   background: var(--helps-bg);
   color: var(--helps-text);
-  border-color: var(--helps-text);
 }
 
 /* The last tag group no longer needs extra space; buttons sit below it */
@@ -723,13 +744,9 @@ button {
   padding: 1rem 1.25rem 1.25rem;
 }
 
-/* Footer refresh button that looks like a link */
+/* Footer refresh button */
 .link-button {
-  padding: 0;
-  background: none;
-  border: 0;
-  color: var(--accent);
-  text-decoration: underline;
+  margin-top: 0.5rem;
 }
 
 #data-note:empty {
@@ -759,8 +776,14 @@ button {
   font-size: 1.05rem;
 }
 
-.page-button:disabled {
-  opacity: 0.4;
+/* Unavailable (first or last page): grey and dashed, no shadow */
+.page-button:disabled,
+.page-button:disabled:hover {
+  background: var(--surface-alt);
+  border: 2px dashed var(--text-muted);
+  color: var(--text-muted);
+  box-shadow: none;
+  transform: none;
   cursor: not-allowed;
 }
 
