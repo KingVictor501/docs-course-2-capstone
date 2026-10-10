@@ -28,6 +28,8 @@
   --button-text: #ffffff;
   --button-hover: #22553b;
   --button-shadow: rgba(16, 40, 27, 0.25);
+  --details-bg: #2f6f4f;       /* card Details button: always white text */
+  --details-hover: #22553b;
   --radius: 14px;
   color-scheme: light;
 }
@@ -52,6 +54,8 @@
     --button-text: #0b1a11;
     --button-hover: #b2e6c6;
     --button-shadow: rgba(0, 0, 0, 0.5);
+    --details-bg: #2e7d55;     /* deep enough for white text (5:1), still stands out on the dark card */
+    --details-hover: #276b48;
     color-scheme: dark;
   }
 }
@@ -676,6 +680,14 @@ button {
 .card-actions .details-button {
   flex: 1;
   padding: 0.55rem 0.75rem;
+  background: var(--details-bg);
+  border-color: var(--details-bg);
+  color: #ffffff;
+}
+
+.card-actions .details-button:hover {
+  background: var(--details-hover);
+  border-color: var(--details-hover);
 }
 
 /* Saved favorites: filled heart plus a green background */
