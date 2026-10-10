@@ -23,7 +23,14 @@
 
   <header class="site-header">
     <h1>Strain Finder</h1>
-    <p class="lede">Cannabis strains <strong>predicted to help with</strong> common symptoms, based on lab-tested chemistry. Not medical advice; see the Florida notice below.</p>
+    <p class="lede">Cannabis strains <strong>predicted to help with</strong> common symptoms, based on lab-tested chemistry.</p>
+
+    <!-- Short version of the Florida notice; the link jumps to the full notice in the footer -->
+    <aside class="top-notice" aria-labelledby="top-notice-heading">
+      <h2 id="top-notice-heading">Important: not medical advice</h2>
+      <p>In Florida, cannabis is legal for <strong>medical use only</strong>, with a doctor's recommendation and a Medical Marijuana Use Registry card. Talk to your doctor before use, especially if you take any medication.</p>
+      <p><a href="#florida-notice">Read the full Florida health and legal notice</a></p>
+    </aside>
   </header>
 
   <main id="main">
@@ -137,7 +144,7 @@
 
   <!-- ===== FLORIDA HEALTH DISCLAIMER ===== -->
   <footer class="site-footer">
-    <section class="disclaimer" aria-labelledby="disclaimer-heading">
+    <section id="florida-notice" class="disclaimer" aria-labelledby="disclaimer-heading">
       <h2 id="disclaimer-heading">Health and legal notice (Florida)</h2>
       <ul>
         <li><strong>Not medical advice.</strong> Effects are <em>predicted</em> by a statistical model from each strain's lab results and user reviews. They are not clinical evidence, and they are not a diagnosis or treatment plan.</li>

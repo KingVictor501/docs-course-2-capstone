@@ -133,6 +133,47 @@ main,
   max-width: 40rem;
 }
 
+/* Warning box at the top: same warm colors as the full notice in the footer,
+   with a thick left stripe and a warning sign so it is hard to miss */
+.top-notice {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--side-bg);
+  color: var(--side-text);
+  border: 2px solid var(--side-text);
+  border-left-width: 8px;
+  border-radius: var(--radius);
+}
+
+.top-notice h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+}
+
+/* The sign is decoration; the heading already says "Important" ("" = nothing read aloud) */
+.top-notice h2::before {
+  content: "⚠ " / "";
+}
+
+.top-notice p {
+  margin: 0;
+  color: var(--text);
+}
+
+.top-notice p + p {
+  margin-top: 0.6rem;
+}
+
+.top-notice a {
+  color: var(--side-text);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.top-notice a::after {
+  content: " ↓" / "";
+}
+
 .status {
   padding: 0.6rem 0.8rem;
   border-left: 4px solid var(--accent);
@@ -320,6 +361,16 @@ main,
   border: 1px solid var(--border);
   border-left: 5px solid var(--side-text);
   border-radius: var(--radius);
+}
+
+/* When reached from the top link: a little space above, and a brief highlight */
+.disclaimer {
+  scroll-margin-top: 1rem;
+}
+
+.disclaimer:target {
+  outline: 4px solid var(--focus);
+  outline-offset: 4px;
 }
 
 .disclaimer h2 {
