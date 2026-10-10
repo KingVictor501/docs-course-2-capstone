@@ -795,9 +795,15 @@ button {
   padding: 1rem 1.25rem 1.25rem;
 }
 
-/* Footer refresh button */
-.link-button {
-  margin-top: 0.5rem;
+/* Refresh button: centered just above the page number */
+.refresh-row {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 1rem;
+}
+
+.refresh-row[hidden] {
+  display: none;
 }
 
 #data-note:empty {

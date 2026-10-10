@@ -458,7 +458,7 @@ const loadStrains = async () => {
     showResults();
   } catch (error) {
     console.error(`Could not load strains:`, error);
-    announce(`Sorry, the strain data could not be loaded. ${error.message} Check your connection and press "Refresh data" below.`, true);
+    announce(`Sorry, the strain data could not be loaded. ${error.message} Check your connection and reload the page.`, true);
     resultsHeading.textContent = `Strains`;
   } finally {
     hideLoading();

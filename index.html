@@ -125,6 +125,11 @@
 
       <ul id="strain-list" class="strain-list"></ul>
 
+      <!-- Asks Cannlytics for a fresh copy of the strain list (hidden for now; remove "hidden" to show it) -->
+      <p class="refresh-row" hidden>
+        <button type="button" id="refresh-data" class="button-secondary">Refresh data</button>
+      </p>
+
       <!-- 10 strains per page. Hidden when everything fits on one page. -->
       <nav id="pagination" class="pagination" aria-label="Results pages" hidden>
         <button type="button" id="previous-page" class="button-primary page-button">‹ Previous</button>
@@ -157,7 +162,6 @@
     <p class="source-note">
       Strain data: <a href="https://cannlytics.com/">Cannlytics</a> (last updated 2023).
       <output id="data-note"></output>
-      <button type="button" id="refresh-data" class="button-secondary link-button">Refresh data</button>
     </p>
   </footer>
 </body>
