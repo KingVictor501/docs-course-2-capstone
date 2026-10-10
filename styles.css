@@ -731,3 +731,55 @@ button {
 #data-note:empty {
   display: none;
 }
+
+/* ==========================================================
+   PAGES OF RESULTS (10 strains at a time)
+   ========================================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 0 2.5rem;
+}
+
+.pagination[hidden] {
+  display: none;
+}
+
+/* Big, easy-to-tap buttons */
+.page-button {
+  min-width: 8.5rem;
+  min-height: 3rem;
+  font-size: 1.05rem;
+}
+
+.page-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* On narrow phones: page number on its own line, buttons side by side below */
+@media (max-width: 26rem) {
+  .pagination {
+    flex-wrap: wrap;
+  }
+
+  .page-info {
+    order: -1;
+    flex-basis: 100%;
+    text-align: center;
+  }
+
+  .page-button {
+    flex: 1;
+    min-width: 0;
+  }
+}

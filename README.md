@@ -15,7 +15,8 @@ medications.
 
 1. Type a symptom in the box, or tap one of the **Popular symptoms** buttons.
 2. Narrow the list with the **THC**, **CBD** or **Favorites only** filters, and change the order with **Sort by**.
-3. Press **Details** on a strain for the full description, or **♡ Save** to keep it in your favorites.
+3. Results show 10 strains at a time. Use **Next ›** and **‹ Previous** at the bottom to see more.
+4. Press **Details** on a strain for the full description, or **♡ Save** to keep it in your favorites.
 
 ## What each file does
 
@@ -23,7 +24,7 @@ medications.
 |---|---|
 | `index.html` | The page itself: the search box, filters, the area where strain cards appear, the detail pop-up, and the Florida health and legal notice. |
 | `styles.css` | How the page looks: calm green colors, a card grid that fits phones and computers, colored effect tags, the loading spinner and dark mode. |
-| `js/main.js` | Runs the page. It checks what was typed, finds the matching symptom, applies filters and sorting, and shows the cards, the loading box, "nothing found" help and error messages. |
+| `js/main.js` | Runs the page. It checks what was typed, finds the matching symptom, applies filters and sorting, and shows the cards 10 at a time, plus the loading box, "nothing found" help and error messages. |
 | `js/data.js` | Gets the strain list from the Cannlytics API, keeps only the 8 fields the cards need, fixes missing THC/CBD totals, and saves a copy so the site works when the API is down. |
 | `js/symptoms.js` | Understands everyday words and typos ("brain fog", "my back hurts", "migrane") and matches them to the effects in the data. Keeps helpful effects and side effects apart. |
 | `js/cards.js` | Draws each strain card and the detail pop-up with the description, terpenes and aromas. |

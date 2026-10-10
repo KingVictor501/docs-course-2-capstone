@@ -2,7 +2,8 @@
 // FILE: js/main.js
 // WHAT IT DOES: Runs the page. When someone searches, it checks
 // what they typed, finds the matching symptom, applies the THC/CBD
-// and favorites filters, sorts the list, and shows the cards. It also
+// and favorites filters, sorts the list, and shows the cards
+// 10 at a time with Previous / Next buttons. It also
 // shows the loading box, the "nothing found" help, and error messages.
 // WHY IT'S BUILT THIS WAY: This is the only file that touches the
 // search form. The other files each do one job and are imported here:
@@ -43,6 +44,10 @@ const emptyState = document.querySelector(`#empty-state`);
 const emptyMessage = document.querySelector(`#empty-message`);
 const emptySuggestions = document.querySelector(`#empty-suggestions`);
 const strainList = document.querySelector(`#strain-list`);
+const pagination = document.querySelector(`#pagination`);
+const previousButton = document.querySelector(`#previous-page`);
+const nextButton = document.querySelector(`#next-page`);
+const pageInfo = document.querySelector(`#page-info`);
 const strainDialog = document.querySelector(`#strain-dialog`);
 const dataNote = document.querySelector(`#data-note`);
 const refreshButton = document.querySelector(`#refresh-data`);
@@ -55,7 +60,11 @@ const state = {
   strains: [],        // every strain (trimmed)
   symptom: false,     // the symptom being searched, or false for "all strains"
   searchedText: ``,   // exactly what was typed, e.g. "brain fog"
+  page: 1,            // which page of results is showing
 };
+
+// How many strain cards show at once (a long list is hard to scroll on a phone)
+const STRAINS_PER_PAGE = 10;
 
 // ----------------------------------------------------------
 // STATUS MESSAGES
@@ -225,13 +234,30 @@ const renderEmptyState = () => {
 // DRAWING THE RESULTS
 // ----------------------------------------------------------
 
+// Shows the Previous / Next buttons and "Page 2 of 19"
+const renderPagination = (totalPages) => {
+  pagination.hidden = totalPages <= 1;
+  pageInfo.textContent = `Page ${state.page} of ${totalPages}`;
+  previousButton.disabled = state.page === 1;
+  nextButton.disabled = state.page === totalPages;
+};
+
 const showResults = () => {
   const strains = filteredStrains();
   const matched = state.symptom ? state.symptom.effects : [];
 
+  // Keep the page number in range (the list can shrink, e.g. after removing a favorite)
+  const totalPages = Math.max(1, Math.ceil(strains.length / STRAINS_PER_PAGE));
+  state.page = Math.min(state.page, totalPages);
+
+  // Only draw the 10 strains on this page
+  const start = (state.page - 1) * STRAINS_PER_PAGE;
+  const pageOfStrains = strains.slice(start, start + STRAINS_PER_PAGE);
+
   resultsHeading.textContent = resultsTitle(strains.length);
   resultsNote.textContent = resultsExplanation();
-  renderStrains(strains, strainList, matched);
+  renderStrains(pageOfStrains, strainList, matched);
+  renderPagination(totalPages);
 
   if (strains.length === 0) {
     renderEmptyState();
@@ -239,7 +265,15 @@ const showResults = () => {
     emptyState.hidden = true;
   }
 
-  announce(`${resultsTitle(strains.length)}.`, false);
+  announce(`${resultsTitle(strains.length)}.${totalPages > 1 ? ` Page ${state.page} of ${totalPages}.` : ``}`, false);
+};
+
+// Moves to another page, then takes the reader back to the top of the results
+const changePage = (step) => {
+  state.page += step;
+  showResults();
+  resultsHeading.focus();
+  resultsHeading.scrollIntoView({ block: `start` });
 };
 
 // ----------------------------------------------------------
@@ -314,6 +348,7 @@ const handleSearch = (event) => {
   const text = symptomInput.value.trim();
   state.symptom = text === `` ? false : findSymptom(text);
   state.searchedText = text; // their words stay in the box; the results say what they matched
+  state.page = 1;
   showResults();
 
   // Step 5: move focus to the results so keyboard users land on them
@@ -329,6 +364,7 @@ const searchFor = (name) => {
 // Filters apply right away, without pressing the button
 const handleFilterChange = () => {
   setError(favoritesOnly, favoritesError, favoritesMessage());
+  state.page = 1;
   showResults();
 };
 
@@ -346,6 +382,7 @@ const handleClear = () => {
   searchForm.reset();
   state.symptom = false;
   state.searchedText = ``;
+  state.page = 1;
   setError(symptomInput, symptomError, ``);
   setError(favoritesOnly, favoritesError, ``);
   showResults();
@@ -406,6 +443,7 @@ const loadStrains = async () => {
     state.strains = result.strains;
     dataNote.textContent = describeSource(result);
     renderQuickPicks();
+    state.page = 1;
     showResults();
   } catch (error) {
     console.error(`Could not load strains:`, error);
@@ -427,6 +465,8 @@ searchForm.addEventListener(`submit`, handleSearch);
 symptomInput.addEventListener(`input`, handleSymptomInput);
 [thcFilter, cbdFilter, sortSelect, favoritesOnly].forEach((control) => control.addEventListener(`change`, handleFilterChange));
 clearButton.addEventListener(`click`, handleClear);
+previousButton.addEventListener(`click`, () => changePage(-1));
+nextButton.addEventListener(`click`, () => changePage(1));
 refreshButton.addEventListener(`click`, () => {
   clearSavedCopy();
   loadStrains();
