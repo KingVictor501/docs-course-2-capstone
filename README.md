@@ -24,8 +24,8 @@ medications.
 - Effects are **predicted** by a model from lab results and user reviews. They are not clinical evidence.
 - Only migraines (3 strains) and depression (4) have medical labels. Insomnia, stress, anxiety, fatigue, appetite and
   focus use the closest feeling (sleepy, relaxed, energetic, hungry, focused), and the page says so.
-- Pain, nausea, arthritis, seizures, muscle spasms and glaucoma have no matching strains yet; the page explains this
-  instead of guessing.
+- Symptoms with no matching strains (currently pain, arthritis, seizures, muscle spasms and glaucoma) are not offered.
+  They appear automatically if the data adds strains for them.
 
 ## Run it on your computer
 

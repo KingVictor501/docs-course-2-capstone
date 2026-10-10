@@ -15,7 +15,7 @@
 // ==========================================================
 
 import { loadStrainData, clearSavedCopy } from './data.js';
-import { SYMPTOMS, findSymptom, strainsForSymptom, symptomCounts } from './symptoms.js';
+import { findSymptom, strainsForSymptom, symptomCounts, availableSymptoms } from './symptoms.js';
 import { renderStrains, onFavoriteChange, lastDetailOpener } from './cards.js';
 import { getFavorites } from './favorites.js';
 import { el, labelFor } from './dom.js';
@@ -61,6 +61,7 @@ const state = {
   symptom: false,     // the symptom being searched, or false for "all strains"
   searchedText: ``,   // exactly what was typed, e.g. "brain fog"
   page: 1,            // which page of results is showing
+  symptoms: [],       // symptoms that have at least one strain (filled in after loading)
 };
 
 // How many strain cards show at once (a long list is hard to scroll on a phone)
@@ -209,9 +210,7 @@ const renderEmptyState = () => {
   const symptom = state.symptom;
   const reasons = [];
 
-  if (symptom && strainsForSymptom(state.strains, symptom).length === 0) {
-    reasons.push(`No strains in this data are predicted to help with ${symptom.name.toLowerCase()} yet. The data covers ${state.strains.length} strains and only a few medical labels.`);
-  } else if (filtersActive()) {
+  if (filtersActive()) {
     reasons.push(`Your filters are hiding every match. Try a different THC or CBD level, or turn off "Favorites only".`);
   }
 
@@ -292,6 +291,14 @@ const setError = (input, errorElement, message) => {
   }
 };
 
+// Finds what they meant, then checks that symptom has strains.
+// It matches against EVERY symptom first, so "back pain" is understood as pain
+// (which has no strains) instead of falling through to a different symptom.
+const matchSymptom = (text) => {
+  const found = findSymptom(text);
+  return found && state.symptoms.includes(found) ? found : false;
+};
+
 // Returns an error message for the symptom box, or `` if it is fine
 const symptomMessage = () => {
   symptomInput.setCustomValidity(``);
@@ -311,7 +318,7 @@ const symptomMessage = () => {
   if (validity.patternMismatch) {
     return `Use letters only, like "migraine" or "can't sleep".`;
   }
-  if (!findSymptom(text)) {
+  if (!matchSymptom(text)) {
     const examples = symptomsWithResults().slice(0, 4).map(({ symptom }) => symptom.name.toLowerCase()).join(`, `);
     return `We don't have data for "${text}" yet. Try ${examples}.`;
   }
@@ -346,7 +353,7 @@ const handleSearch = (event) => {
 
   // Step 4: remember the symptom and show the matching strains
   const text = symptomInput.value.trim();
-  state.symptom = text === `` ? false : findSymptom(text);
+  state.symptom = text === `` ? false : matchSymptom(text);
   state.searchedText = text; // their words stay in the box; the results say what they matched
   state.page = 1;
   showResults();
@@ -441,6 +448,10 @@ const loadStrains = async () => {
   try {
     const result = await loadStrainData();
     state.strains = result.strains;
+
+    // Only offer symptoms that have strains, in the suggestion list and in searches
+    state.symptoms = availableSymptoms(state.strains);
+    symptomOptions.replaceChildren(...state.symptoms.map((symptom) => el(`option`, { value: symptom.name })));
     dataNote.textContent = describeSource(result);
     renderQuickPicks();
     state.page = 1;
@@ -457,9 +468,6 @@ const loadStrains = async () => {
 // ----------------------------------------------------------
 // START UP
 // ----------------------------------------------------------
-
-// Suggestion list for the symptom box
-symptomOptions.replaceChildren(...SYMPTOMS.map((symptom) => el(`option`, { value: symptom.name })));
 
 searchForm.addEventListener(`submit`, handleSearch);
 symptomInput.addEventListener(`input`, handleSymptomInput);

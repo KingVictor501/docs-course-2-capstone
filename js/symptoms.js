@@ -36,7 +36,7 @@ export const groupEffects = (effects) => ({
 // SYMPTOM LIST
 // name:    what the suggestion list shows
 // terms:   words and phrases people might type for it
-// effects: effect labels that count as a match (empty = no data yet)
+// effects: effect labels that count as a match
 // avoid:   strains with these side effects are left out
 // via:     when the match is a feeling (not a medical label), we say so
 // To support a new way of saying something, add it to terms.
@@ -107,14 +107,6 @@ export const SYMPTOMS = [
     ],
     effects: [`effect_hungry`],
     via: `hungry`,
-  },
-  {
-    name: `Nausea`,
-    terms: [
-      `nausea`, `nauseous`, `nauseated`, `queasy`, `vomiting`, `throwing up`, `upset stomach`,
-      `sick to my stomach`, `motion sickness`, `morning sickness`, `chemo nausea`,
-    ],
-    effects: [], // the data has no nausea label yet
   },
   {
     name: `Trouble focusing`,
@@ -225,7 +217,7 @@ const wordsMatch = (typed, known) => {
 // True if a phrase appears in the text as whole words ("back pain" in "bad back pain", not "pain" in "painting")
 const containsPhrase = (text, phrase) => ` ${text} `.includes(` ${phrase} `);
 
-// Finds the symptom for what was typed, or false if we have no data for it
+// Finds the symptom for what was typed, or false if it isn't one we know
 export const findSymptom = (text) => {
   const typed = normalize(text);
   if (typed === ``) {
@@ -279,3 +271,9 @@ export const strainsForSymptom = (strains, symptom) => strains.filter((strain) =
 export const symptomCounts = (strains) => SYMPTOMS
   .map((symptom) => ({ symptom, count: strainsForSymptom(strains, symptom).length }))
   .sort((first, second) => second.count - first.count);
+
+// Only the symptoms that have at least one matching strain.
+// Symptoms with no strains are left out of suggestions and searches,
+// and come back on their own if the data ever adds strains for them.
+export const availableSymptoms = (strains) =>
+  SYMPTOMS.filter((symptom) => strainsForSymptom(strains, symptom).length > 0);
