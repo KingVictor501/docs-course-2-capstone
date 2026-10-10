@@ -78,7 +78,7 @@ const favoriteButtonContent = (strain, saved) => [
   el(`small`, { class: `visually-hidden` }, ` ${strain.name}`),
 ];
 
-// Heart button. aria-pressed tells screen readers whether it is saved.
+// Heart button (in the detail view). aria-pressed tells screen readers whether it is saved.
 const createFavoriteButton = (strain) => {
   const saved = isFavorite(strain.name);
   return el(`button`, {
@@ -88,14 +88,10 @@ const createFavoriteButton = (strain) => {
     [`data-strain`]: strain.name,
     onclick: (event) => {
       const nowSaved = toggleFavorite(strain.name);
-      // Update every heart for this strain (card and detail view)
-      document.querySelectorAll(`.favorite-button`).forEach((button) => {
-        if (button.dataset.strain === strain.name) {
-          button.setAttribute(`aria-pressed`, `${nowSaved}`);
-          button.replaceChildren(...favoriteButtonContent(strain, nowSaved));
-        }
-      });
-      favoriteChanged(strain, nowSaved, event.currentTarget);
+      const button = event.currentTarget;
+      button.setAttribute(`aria-pressed`, `${nowSaved}`);
+      button.replaceChildren(...favoriteButtonContent(strain, nowSaved));
+      favoriteChanged(strain, nowSaved);
     },
   }, favoriteButtonContent(strain, saved));
 };
@@ -157,6 +153,7 @@ export const openStrainDetail = (strain, matched) => {
 const idFor = (name) => `strain-${name.toLowerCase().replace(/[^a-z0-9]+/g, `-`)}`;
 
 // One strain card. matched = effect labels that matched the search.
+// Saving a favorite happens in the detail view, so the card has one button.
 const createStrainCard = (strain, matched) => el(`li`, {},
   el(`article`, { class: `strain-card`, [`aria-labelledby`]: idFor(strain.name) },
     createStrainImage(strain, `card-image`),
@@ -172,7 +169,6 @@ const createStrainCard = (strain, matched) => el(`li`, {},
         [`aria-label`]: `Details for ${strain.name}`,
         onclick: () => openStrainDetail(strain, matched),
       }, `Details`),
-      createFavoriteButton(strain),
     ),
   ),
 );

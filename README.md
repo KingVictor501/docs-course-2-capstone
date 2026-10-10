@@ -16,7 +16,7 @@ medications.
 1. Type a symptom in the box, or tap one of the **Popular symptoms** buttons.
 2. Narrow the list with the **THC**, **CBD** or **Favorites only** filters, and change the order with **Sort by**.
 3. Results show 10 strains at a time. Use **Next ›** and **‹ Previous** at the bottom to see more.
-4. Press **Details** on a strain for the full description, or **♡ Save** to keep it in your favorites.
+4. Press **Details** on a strain for the full description. Press **♡ Save** there to keep it in your favorites.
 
 ## Limits of the data
 

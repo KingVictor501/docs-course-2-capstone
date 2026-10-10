@@ -327,7 +327,7 @@ const symptomMessage = () => {
 
 // CROSS-FIELD CHECK: "Favorites only" needs at least one saved favorite
 const favoritesMessage = () => (favoritesOnly.checked && getFavorites().length === 0
-  ? `You haven't saved any favorites yet. Tap ♡ Save on a strain first.`
+  ? `You haven't saved any favorites yet. Open a strain's Details and tap ♡ Save first.`
   : ``);
 
 // ----------------------------------------------------------
@@ -403,13 +403,10 @@ const handleSymptomInput = () => {
   }
 };
 
-// When a heart is tapped while "Favorites only" is on, the list changes
+// When the heart in the detail view is tapped, say so for screen readers.
+// (The list itself is updated when the detail view closes, below.)
 onFavoriteChange((strain, nowSaved) => {
   announce(nowSaved ? `${strain.name} saved to favorites.` : `${strain.name} removed from favorites.`, false);
-  if (favoritesOnly.checked && !strainDialog.open) {
-    showResults();
-    resultsHeading.focus(); // the card that had focus may be gone
-  }
 });
 
 // When the detail view closes: refresh the list if favorites changed inside it,
